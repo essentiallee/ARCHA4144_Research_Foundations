@@ -241,6 +241,13 @@ figcaption,
   text-transform: uppercase;
 }
 
+.eyebrow + h1,
+.eyebrow + h2,
+.eyebrow + h3,
+.eyebrow + h4 {
+  margin-top: var(--space-2);
+}
+
 .muted,
 .source-note,
 .methodology {
