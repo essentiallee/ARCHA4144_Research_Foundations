@@ -1,5 +1,7 @@
 # SoHo Art-Based Gentrification — Website Style Guide
 
+Website Address: https://essentiallee.github.io/ARCHA4144_Research_Foundations/
+
 ## 1. Design direction
 
 The site should feel like a contemporary research archive: precise, spacious, typographically confident, and led by evidence. Its visual language combines the restrained editorial layout of [AOI — Art on Internet](https://www.stockholmdesignlab.se/work/aoi) with the large-scale sans-serif statements and systematic pacing of [Sana Labs](https://www.stockholmdesignlab.se/work/sana-labs).
