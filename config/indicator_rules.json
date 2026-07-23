@@ -1,0 +1,55 @@
+{
+  "migration": {
+    "same_house_5yr": {
+      "include": ["same house"],
+      "exclude": ["not reported"]
+    },
+    "moved_same_county": {
+      "include": ["same county"],
+      "exclude": ["same house", "not reported"]
+    },
+    "moved_same_state": {
+      "include": ["different county", "same state"],
+      "exclude": ["not reported"]
+    },
+    "moved_other_state": {
+      "include": ["different state"],
+      "exclude": ["same state", "not reported"]
+    },
+    "moved_abroad": {
+      "include": ["abroad"],
+      "exclude": ["not reported"]
+    }
+  },
+  "occupancy": {
+    "occupied_units": {
+      "include": ["occupied"],
+      "exclude": ["vacant", "owner", "renter"]
+    },
+    "vacant_units": {
+      "include": ["vacant"],
+      "exclude": ["for rent", "for sale", "seasonal", "migratory", "other vacant"]
+    }
+  },
+  "tenure": {
+    "owner_units": {
+      "include": ["owner"],
+      "exclude": ["vacant"]
+    },
+    "renter_units": {
+      "include": ["renter"],
+      "exclude": ["vacant"]
+    }
+  },
+  "rent": {
+    "median_contract_rent": {
+      "include": ["median", "rent"],
+      "exclude": ["gross"]
+    },
+    "median_gross_rent": {
+      "include": ["median", "gross rent"],
+      "exclude": []
+    }
+  }
+}
+

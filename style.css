@@ -35,21 +35,40 @@
   --space-10: 192px;
 
   /* Interface color */
-  --color-ink: #0a0a0a;
-  --color-paper: #f4f1ea;
+  --color-ink: #000000;
   --color-white: #ffffff;
-  --color-charcoal: #181818;
-  --color-muted: #6b6b66;
-  --color-rule: #d2d2cc;
-  --color-soft-fill: #e8e5de;
+  --color-muted: #777777;
+  --color-rule: #cfcfcf;
+  --color-disabled: #b5b5b5;
 
   /* Data color */
-  --data-artists: #0072b2;
-  --data-rent: #d55e00;
-  --data-galleries: #009e73;
-  --data-policy: #cc79a7;
-  --data-forecast: #e6ab02;
-  --data-context: #8a8a84;
+  --data-red: #ee2722;
+  --data-red-orange: #f04a24;
+  --data-coral: #ff7a59;
+  --data-hot-pink: #ec3f97;
+  --data-pale-pink: #e5a4d2;
+  --data-violet: #6a58b0;
+  --data-indigo: #2b218f;
+  --data-near-black: #111510;
+  --data-forest: #20583a;
+  --data-green: #3e8d4c;
+  --data-olive: #829a43;
+  --data-lime: #9acb28;
+  --data-mint: #35c98a;
+  --data-cyan: #39abc8;
+  --data-light-cyan: #91d9e8;
+  --data-yellow: #f2d33c;
+  --data-bright-yellow: #ffe000;
+  --data-pale-yellow: #fff0a3;
+  --data-cream: #fff6cf;
+
+  /* Stable research-variable aliases */
+  --data-artists: var(--data-coral);
+  --data-rent: var(--data-red);
+  --data-galleries: var(--data-green);
+  --data-policy: var(--data-bright-yellow);
+  --data-forecast: var(--data-violet);
+  --data-context: var(--data-near-black);
 
   /* Layout */
   --page-gutter: 32px;
@@ -90,7 +109,7 @@ dd {
 
 body {
   min-height: 100vh;
-  background: var(--color-paper);
+  background: var(--color-white);
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: var(--text-body);
@@ -279,7 +298,7 @@ a:hover {
 
 :focus-visible {
   border-radius: 1px;
-  outline: 2px solid var(--data-artists);
+  outline: 2px solid var(--color-ink);
   outline-offset: 3px;
 }
 
@@ -365,7 +384,7 @@ sup a {
   position: relative;
   z-index: 20;
   min-height: var(--header-height);
-  background: var(--color-paper);
+  background: var(--color-white);
   border-bottom: 1px solid transparent;
 }
 
@@ -415,10 +434,15 @@ sup a {
   display: none;
   min-width: 44px;
   min-height: 44px;
-  padding: var(--space-2);
+  padding: var(--space-2) 0;
   background: transparent;
-  border: 1px solid var(--color-ink);
+  border: 0;
   cursor: pointer;
+}
+
+.menu-toggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
 }
 
 /* Narrative structure */
@@ -433,8 +457,8 @@ sup a {
 
 .section--dark,
 .chapter-opening {
-  background: var(--color-ink);
-  color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-ink);
 }
 
 .section--white {
@@ -458,11 +482,7 @@ sup a {
 }
 
 .chapter-opening--image::before {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background: rgb(0 0 0 / 48%);
-  content: "";
+  content: none;
 }
 
 .chapter-opening__title {
@@ -706,9 +726,9 @@ th:last-child {
   position: absolute;
   z-index: 10;
   max-width: 280px;
-  padding: var(--space-3);
-  background: var(--color-ink);
-  color: var(--color-white);
+  padding: var(--space-2) 0;
+  background: var(--color-white);
+  color: var(--color-ink);
   font-family: var(--font-mono);
   font-size: var(--text-small);
   line-height: 1.4;
@@ -750,9 +770,9 @@ th:last-child {
   min-height: 44px;
   align-items: center;
   justify-content: center;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-2) 0;
   background: transparent;
-  border: 1px solid var(--color-ink);
+  border: 0;
   color: var(--color-ink);
   font-weight: 500;
   line-height: 1;
@@ -763,15 +783,126 @@ th:last-child {
 .data-control:hover,
 .data-control[aria-pressed="true"],
 .button:hover {
-  background: var(--color-ink);
-  color: var(--color-white);
+  background: transparent;
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+
+.data-control[aria-pressed="true"] {
+  font-weight: 500;
 }
 
 .data-control:disabled,
 .button:disabled {
-  border-color: var(--color-rule);
-  color: var(--color-muted);
+  color: var(--color-disabled);
+  text-decoration: none;
   cursor: not-allowed;
+}
+
+/* Census migration map */
+
+.census-map {
+  margin-top: var(--space-6);
+}
+
+.census-map__toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-ink);
+}
+
+.census-map__toolbar .data-controls {
+  margin-bottom: 0;
+}
+
+.census-map__metric {
+  display: grid;
+  min-width: min(100%, 20rem);
+  gap: var(--space-2);
+}
+
+.census-map__metric select {
+  min-height: 44px;
+  padding: var(--space-2) 40px var(--space-2) 0;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-ink);
+  border-radius: 0;
+}
+
+.census-map__frame {
+  position: relative;
+  min-height: 460px;
+  margin-top: var(--space-4);
+  background: transparent;
+}
+
+.census-map__frame svg {
+  width: 100%;
+  height: auto;
+}
+
+.census-map__status {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(calc(100% - 48px), 34rem);
+  margin: 0;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.census-map__tract {
+  stroke: var(--color-white);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+.census-map__tract:hover,
+.census-map__tract:focus {
+  stroke: var(--color-ink);
+  stroke-width: 2;
+  outline: none;
+}
+
+.census-map__study-boundary {
+  fill: none;
+  pointer-events: none;
+  stroke: var(--data-policy);
+  stroke-dasharray: 7 5;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.census-map__legend {
+  align-items: center;
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.census-map__legend-title {
+  margin-right: var(--space-3);
+  font-weight: 700;
+}
+
+.census-map__legend-swatch {
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgb(10 10 10 / 18%);
+}
+
+.census-map .chart-tooltip {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.census-map .chart-tooltip strong {
+  margin-top: var(--space-2);
 }
 
 /* Utility classes */
@@ -863,9 +994,10 @@ th:last-child {
     left: var(--page-gutter);
     display: none;
     align-items: stretch;
-    padding: var(--space-3);
-    background: var(--color-paper);
-    border: 1px solid var(--color-ink);
+    padding: var(--space-3) 0;
+    background: var(--color-white);
+    border-top: 1px solid var(--color-rule);
+    border-bottom: 1px solid var(--color-rule);
     flex-direction: column;
     gap: var(--space-3);
   }
@@ -929,6 +1061,23 @@ th:last-child {
   th,
   td {
     padding-block: var(--space-2);
+  }
+
+  .census-map {
+    margin-top: var(--space-5);
+  }
+
+  .census-map__toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .census-map__metric {
+    min-width: 100%;
+  }
+
+  .census-map__frame {
+    min-height: 520px;
   }
 }
 

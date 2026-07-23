@@ -1,0 +1,15 @@
+.DS_Store
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Downloaded IPUMS extracts and generated outputs
+data/raw/nhgis/*
+!data/raw/nhgis/.gitkeep
+data/metadata/nhgis_manifest.json
+data/metadata/nhgis_extract_state.json
+data/processed/*
+!data/processed/.gitkeep
+

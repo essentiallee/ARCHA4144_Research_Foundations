@@ -1,0 +1,72 @@
+{
+  "description": "SoHo migration and housing context, 1960 and 1970",
+  "geographicExtents": ["360"],
+  "geogLevel": "tract",
+  "datasets": {
+    "1960_tPH": {
+      "year": 1960,
+      "roles": {
+        "migration": {
+          "descriptionPatterns": ["Residence in 1955"]
+        },
+        "occupancy": {
+          "descriptionPatterns": ["Occupancy Status"],
+          "excludePatterns": ["Tenure"]
+        },
+        "tenure": {
+          "descriptionPatterns": ["Tenure"],
+          "excludePatterns": ["Race", "Color", "Plumbing", "Persons"]
+        },
+        "rent": {
+          "descriptionPatterns": ["Contract Rent"],
+          "excludePatterns": ["Race", "Color", "Plumbing"]
+        }
+      }
+    },
+    "1970_Cnt4Pb": {
+      "year": 1970,
+      "roles": {
+        "migration": {
+          "preferredTable": "NT28",
+          "descriptionPatterns": ["Residence in 1965"]
+        }
+      }
+    },
+    "1970_Cnt2": {
+      "year": 1970,
+      "roles": {
+        "occupancy": {
+          "preferredTable": "NT30",
+          "descriptionPatterns": ["Occupancy", "Vacancy"]
+        },
+        "tenure": {
+          "preferredTable": "NT31A",
+          "descriptionPatterns": ["Tenure"]
+        }
+      }
+    },
+    "1970_Cnt4H": {
+      "year": 1970,
+      "roles": {
+        "rent": {
+          "preferredTable": "NT19A",
+          "descriptionPatterns": ["Gross Rent"]
+        }
+      }
+    }
+  },
+  "shapefiles": {
+    "1960": {
+      "year": "1960",
+      "geographicLevelPattern": "tract",
+      "extentPattern": "United States",
+      "basisPattern": "2000 TIGER/Line"
+    },
+    "1970": {
+      "year": "1970",
+      "geographicLevelPattern": "tract",
+      "extentPattern": "United States",
+      "basisPattern": "2000 TIGER/Line"
+    }
+  }
+}

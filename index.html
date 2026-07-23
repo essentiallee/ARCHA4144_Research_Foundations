@@ -42,6 +42,103 @@
                 </div>
             </div>
         </section>
+
+        <section class="section section--white" aria-labelledby="migration-map-title">
+            <div class="wide">
+                <header class="chart__header grid grid--align-end">
+                    <div class="span-4">
+                        <p class="eyebrow">Census geography</p>
+                        <h2 id="migration-map-title" class="heading-3">
+                            Downtown residential migration
+                        </h2>
+                    </div>
+
+                    <div class="span-8 reading-column">
+                        <p class="lead">
+                            Compare residential turnover and housing conditions
+                            around SoHo before and after the artist colony began
+                            to consolidate.
+                        </p>
+                    </div>
+                </header>
+
+                <figure
+                    id="census-map"
+                    class="map census-map"
+                    aria-labelledby="migration-map-title"
+                    data-map-root
+                >
+                    <div class="census-map__toolbar">
+                        <fieldset class="data-controls" aria-label="Census year">
+                            <legend class="visually-hidden">Census year</legend>
+                            <button
+                                class="data-control"
+                                type="button"
+                                data-year="1960"
+                                aria-pressed="true"
+                            >
+                                1960
+                            </button>
+                            <button
+                                class="data-control"
+                                type="button"
+                                data-year="1970"
+                                aria-pressed="false"
+                            >
+                                1970
+                            </button>
+                        </fieldset>
+
+                        <label class="census-map__metric label">
+                            Measure
+                            <select data-metric>
+                                <option value="recent_mover_pct">
+                                    Recent movers (%)
+                                </option>
+                                <option value="vacancy_pct">
+                                    Vacant housing units (%)
+                                </option>
+                                <option value="renter_pct">
+                                    Renter-occupied units (%)
+                                </option>
+                                <option value="median_rent">
+                                    Median monthly rent ($)
+                                </option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="census-map__frame" data-map-frame>
+                        <p class="census-map__status methodology" data-map-status>
+                            Loading census data…
+                        </p>
+                    </div>
+
+                    <div class="census-map__legend legend" data-map-legend></div>
+
+                    <figcaption>
+                        Figure 1 — Historical census tracts intersecting the
+                        downtown Manhattan study area, Chambers Street to 14th
+                        Street.
+                    </figcaption>
+                    <p class="source-note">
+                        Source: IPUMS NHGIS, 1960 Population &amp; Housing and
+                        1970 Count 2/4 files. Boundaries are displayed in their
+                        original census-year geography; values are not
+                        tract-to-tract change estimates.
+                    </p>
+                    <p class="methodology">
+                        “Recent movers” means residents age five and over who
+                        lived in a different house five years before the
+                        census. It describes general residential mobility, not
+                        artist migration by itself.
+                    </p>
+                </figure>
+            </div>
+        </section>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module" src="./main.js"></script>
 </body>
 </html>
