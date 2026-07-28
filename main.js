@@ -29,7 +29,7 @@ const palette = [
   [253, 246, 230],
 ];
 
-//Creating the storage arrays
+//Creating the storage arrays for random walker variable
 //walkers = moving points that leave trails
 //blooms = watercolor strains that gorw around landing points
 //connections = lines drawn between nearby nodes
