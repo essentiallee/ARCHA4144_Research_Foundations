@@ -3,142 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Foundations: Art-based Gentrification</title>
+    
+    <title>Butterfly Effect Field</title>
 
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-    <main>
-        <section class="chapter-opening title-page" aria-labelledby="page-title">
-            <div class="container title-page__inner">
-                <h1 id="page-title" class="display-lg title-page__title">
-                    Research Foundations: Art-based Gentrification
-                </h1>
+    <canvas
+        id="field"
+        aria-lable="Interactive waterclor network"
+    ></canvas>
 
-                <div class="title-page__details">
-                    <h2 class="heading-3 title-page__subtitle">
-                        A Study on Artworld’s Soho Migration from 1950s to the 70s
-                    </h2>
+    <div class="prompt" id="prompt">
+        <p>You are your own consequence</p>
+    </div>
 
-                    <div class="metadata title-page__credit">
-                        <p>Jae Hyun Lee | jl7559</p>
-                        <p>MS.CDP 2026</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <button id="clearButton" type="button">
+        Clear
+    </button>
 
-        <section class="section" aria-labelledby="research-description">
-            <div class="container grid grid--align-start">
-                <header class="span-4">
-                    <p class="eyebrow">Project overview</p>
-                    <h2 id="research-description" class="heading-3">Research Description</h2>
-                </header>
+    <div id="counter" aria-live="polite">
+        000 consequences
+    </div>
 
-                <div class="span-8 reading-column">
-                    <p class="lead">
-                        This research examines SoHo’s transformation between the 1950s and late 1970s not as a simple narrative in which artists “caused” gentrification, but as a multi-stage conversion of industrial space into cultural value and cultural value into land value. It investigates how deindustrialization, threatened urban renewal, illegal loft occupation, artist organizing, zoning reform, media representation, gallery agglomeration, historic preservation, and real-estate policy interacted over time. The project combines archival and policy research with a geocoded dataset of artist residences, galleries, alternative spaces, rents, property transactions, loft conversions, and demographic change. Its main hypothesis is that artistic activity becomes a mechanism of gentrification only when inexpensive adaptable space, regulatory change, concentrated cultural networks, public recognition, and weak tenure protections occur together. Artists produced spatial improvements, social networks, and symbolic identity, but the resulting value was largely captured by property owners and commercial actors. The final section compares SoHo’s limited organizational victories with artist-governed institutions that established stronger control over housing, property, membership, or exhibition decisions.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section section--white" aria-labelledby="migration-map-title">
-            <div class="wide">
-                <header class="chart__header grid grid--align-end">
-                    <div class="span-4">
-                        <p class="eyebrow">Census geography</p>
-                        <h2 id="migration-map-title" class="heading-3">
-                            Downtown residential migration
-                        </h2>
-                    </div>
-
-                    <div class="span-8 reading-column">
-                        <p class="lead">
-                            Compare residential turnover and housing conditions
-                            around SoHo before and after the artist colony began
-                            to consolidate.
-                        </p>
-                    </div>
-                </header>
-
-                <figure
-                    id="census-map"
-                    class="map census-map"
-                    aria-labelledby="migration-map-title"
-                    data-map-root
-                >
-                    <div class="census-map__toolbar">
-                        <fieldset class="data-controls" aria-label="Census year">
-                            <legend class="visually-hidden">Census year</legend>
-                            <button
-                                class="data-control"
-                                type="button"
-                                data-year="1960"
-                                aria-pressed="true"
-                            >
-                                1960
-                            </button>
-                            <button
-                                class="data-control"
-                                type="button"
-                                data-year="1970"
-                                aria-pressed="false"
-                            >
-                                1970
-                            </button>
-                        </fieldset>
-
-                        <label class="census-map__metric label">
-                            Measure
-                            <select data-metric>
-                                <option value="recent_mover_pct">
-                                    Recent movers (%)
-                                </option>
-                                <option value="vacancy_pct">
-                                    Vacant housing units (%)
-                                </option>
-                                <option value="renter_pct">
-                                    Renter-occupied units (%)
-                                </option>
-                                <option value="median_rent">
-                                    Median monthly rent ($)
-                                </option>
-                            </select>
-                        </label>
-                    </div>
-
-                    <div class="census-map__frame" data-map-frame>
-                        <p class="census-map__status methodology" data-map-status>
-                            Loading census data…
-                        </p>
-                    </div>
-
-                    <div class="census-map__legend legend" data-map-legend></div>
-
-                    <figcaption>
-                        Figure 1 — Historical census tracts intersecting the
-                        downtown Manhattan study area, Chambers Street to 14th
-                        Street.
-                    </figcaption>
-                    <p class="source-note">
-                        Source: IPUMS NHGIS, 1960 Population &amp; Housing and
-                        1970 Count 2/4 files. Boundaries are displayed in their
-                        original census-year geography; values are not
-                        tract-to-tract change estimates.
-                    </p>
-                    <p class="methodology">
-                        “Recent movers” means residents age five and over who
-                        lived in a different house five years before the
-                        census. It describes general residential mobility, not
-                        artist migration by itself.
-                    </p>
-                </figure>
-            </div>
-        </section>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
-    <script type="module" src="./main.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

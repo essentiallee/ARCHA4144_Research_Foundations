@@ -1,7 +1,6 @@
-import { CensusMigrationMap } from "./d3-census-map.js";
+const canvas = document.querySelector("#field");
+const context = canvas.getContext("2d");
 
-const mapRoot = document.querySelector("[data-map-root]");
-
-if (mapRoot) {
-  new CensusMigrationMap(mapRoot);
-}
+const prompt = document.querySelector("#prompt");
+const clearButton = document.querySelector("#clearButton");
+const counter = document.querySelector("#counter");
