@@ -127,7 +127,7 @@ function createWalker(
   generation = 0,
   angle = random(0, Math.PI * 2)
 ) {
-  if (walker.length >= 260) return; //safe to have a limit, otherwise the browser might freeze from calculating too much
+  if (walkers.length >= 260) return; //safe to have a limit, otherwise the browser might freeze from calculating too much
 
   //previous position is needed to draw a line from the last location to the new one.
   walkers.push({
@@ -213,12 +213,13 @@ function paintTrail(walker) {
   bleedContext.moveTo(walker.previousX, walker.previousY);
   bleedContext.quadraticCurveTo(
     (walker.previousX + walker.x) / 2 + random(-1.4, 1.4),
-    (walker.previousY + walker.y) / 2 + random(-1.4, -1.4),
+    (walker.previousY + walker.y) / 2 + random(-1.4, 1.4),
     walker.x,
     walker.y
   );
   bleedContext.strokeStyle = rgba(color, 0.018);
   bleedContext.lineWidth = walker.lineWidth * 10 + speed * 2;
+  bleedContext.lineCap = "round"; //round line endings make the watery streak continuous
   bleedContext.stroke();
 
   //Sharp Stroke
@@ -227,12 +228,25 @@ function paintTrail(walker) {
   pigmentContext.lineTo(walker.x, walker.y);
   pigmentContext.strokeStyle = rgba(color, random(0.045, 0.11));
   pigmentContext.lineWidth = walker.lineWidth * random(0.7, 1.5);
+  pigmentContext.lineCap = "round"; //round line endings remove sharp digital corners
   pigmentContext.stroke();
 
   //Random fibers
   if (Math.random() < 0.24) {
-    //Draw another faint, offset line
-  };
+    //Draw another faint, offset line so the trail resembles paper fibers
+    pigmentContext.beginPath();
+    pigmentContext.moveTo(
+      walker.previousX + random(-2, 2),
+      walker.previousY + random(-2, 2)
+    );
+    pigmentContext.lineTo(
+      walker.x + random(-3, 3),
+      walker.y + random(-3, 3)
+    );
+    pigmentContext.strokeStyle = rgba(color, random(0.012, 0.035));
+    pigmentContext.lineWidth = random(0.25, 0.75);
+    pigmentContext.stroke();
+  }
 }
 
 //Landing and Branching
@@ -256,18 +270,30 @@ function landWalker(walker) {
       ? Math.floor(random(2, 4))
       : Math.floor(random(1, 3));
 
-  //Color Mutation
-  const shouldChangeColor = 
-    Math.random() < 0.52; //each child has a 52% chance of changing color
-
-  const nextColor = shouldChangeColor
-    ? chooseColor(walker.colorIndex)
-    : walker.colorIndex;
-  
   //Generation Limit
   if (walker.generation < 7 && walkers.length < 240) {
-    // Create the next generation here
+    //Create each child separately so every branch gets its own direction and possible color mutation
+    for (let index = 0; index < branchCount; index += 1) {
+      //Color Mutation
+      const shouldChangeColor =
+        Math.random() < 0.52; //each child has a 52% chance of changing color
+
+      const nextColor = shouldChangeColor
+        ? chooseColor(walker.colorIndex)
+        : walker.colorIndex;
+
+      createWalker(
+        walker.x,
+        walker.y,
+        nextColor,
+        walker.generation + 1, //the child belongs to the next generation
+        Math.atan2(walker.velocityY, walker.velocityX) + random(-1.7, 1.7) //continue generally forward, but branch at a random angle
+      );
+    }
   }
+
+  connectToNearbyBloom(walker); //after landing, attempt to connect this node to a nearby node
+  updateCounter(); //show the new total in the bottom-left counter
 }
 
 //Connecting nearby Blooms
@@ -277,10 +303,18 @@ function connectToNearbyBloom(walker) {
   let nearest = null;
   let nearestDistance = 220;
 
-  const distance = Math.hypot(
-    blooms.x - walker.x,
-    blooms.y - walker.y
-  );
+  //Check each recent bloom and remember the closest one inside the 220-pixel search radius
+  for (const bloom of candidates) {
+    const distance = Math.hypot(
+      bloom.x - walker.x,
+      bloom.y - walker.y
+    );
+
+    if (distance > 28 && distance < nearestDistance) {
+      nearest = bloom;
+      nearestDistance = distance;
+    }
+  }
 
   //if it finds a nearbyBloom, it may create a connection
   //70% chance
@@ -300,6 +334,8 @@ function connectToNearbyBloom(walker) {
 //Moving the walkers
 //MAIN RANDOM-WALK CALCULATION:
 function updateWalker(walker, frameScale) {
+  walker.age += frameScale; //increase age so the walker eventually lands even if it misses its target
+
   //draw a line between the OLD and NEW positions
   walker.previousX = walker.x;
   walker.previousY = walker.y;
@@ -313,6 +349,8 @@ function updateWalker(walker, frameScale) {
   //Apply Attraction
   //dividing by 'distance' creates a direction with a consistent lenght
   //'attraction' gently pulls the walker toward its target
+  const attraction = 0.028; //small force that guides the random walker toward its destination
+
   walker.velocityX +=
     (differenceX / distance) * attraction * frameScale;
   
@@ -321,22 +359,30 @@ function updateWalker(walker, frameScale) {
 
   const randomTurn = 
     random(-walker.wobble, walker.wobble) * frameScale;
+
+  const cosine = Math.cos(randomTurn); //rotation formula uses cosine for the horizontal component
+  const sine = Math.sin(randomTurn); //rotation formula uses sine for the vertical component
   
   const rotatedX = 
     walker.velocityX * cosine -
-    walker.velocityY * sin;
+    walker.velocityY * sine;
 
   const rotatedY =
-    walker.velocityX * sin +
+    walker.velocityX * sine +
     walker.velocityY * cosine;
   
   //apply friction
   walker.velocityX = rotatedX * 0.985;
   walker.velocityY = rotatedY * 0.985;
 
-  //limit spped
+  //limit speed
+  const speed = Math.hypot(walker.velocityX, walker.velocityY); //measure the new speed after attraction and rotation
+  const maximumSpeed = 1.6; //prevents walkers from accelerating across the canvas too quickly
+
   if (speed > maximumSpeed) {
-    //Reduce velocity to maximumSpeed
+    //Reduce velocity to maximumSpeed without changing its direction
+    walker.velocityX = (walker.velocityX / speed) * maximumSpeed;
+    walker.velocityY = (walker.velocityY / speed) * maximumSpeed;
   }
 
   //Move
@@ -352,31 +398,86 @@ function updateWalker(walker, frameScale) {
 
 //Growing Blooms
 function paintBloom(bloom, frameScale) {
-  const progress = 
+  if (bloom.age >= bloom.maxAge) return; //stop adding pigment after the bloom has fully expanded
+
+  bloom.age += frameScale; //advance the bloom at the same time-based rate as the walkers
+
+  const color = palette[bloom.colorIndex]; //look up the RGB color stored by this bloom
+  const progress =
     Math.min(1, bloom.age / bloom.maxAge);
   
-  const easedProgres = 
+  const easedProgress =
     1 - Math.pow(1 - progress, 3);
   //This makes the bloom expand quickly at first, then slow down near the end
   //several circles are placed around its center with random. size and offsets
   //the opacity is low but accumulates across many frames
+  const radius = bloom.radius * (0.35 + easedProgress * 2.8); //convert progress into the current expanding radius
+
+  for (let index = 0; index < bloom.rings; index += 1) {
+    const angle =
+      (Math.PI * 2 * index) / bloom.rings + random(-0.3, 0.3); //spread imperfect rings around a full circle
+    const offset = radius * random(0.02, 0.26); //move each ring slightly away from the exact center
+
+    bleedContext.beginPath();
+    bleedContext.arc(
+      bloom.x + Math.cos(angle) * offset,
+      bloom.y + Math.sin(angle) * offset,
+      radius * random(0.6, 1.12),
+      0,
+      Math.PI * 2
+    );
+    bleedContext.fillStyle = rgba(color, 0.0028 * (1 - progress)); //the edge becomes lighter as the bloom finishes
+    bleedContext.fill();
+  }
+
+  if (bloom.age < bloom.maxAge * 0.65) {
+    //Add a denser center during the early part of the bloom
+    pigmentContext.beginPath();
+    pigmentContext.arc(
+      bloom.x,
+      bloom.y,
+      radius * random(0.25, 0.55),
+      0,
+      Math.PI * 2
+    );
+    pigmentContext.fillStyle = rgba(color, 0.006 * (1 - progress));
+    pigmentContext.fill();
+  }
 }
 
 //Drawing Network Connections
 function paintConnection(connection, frameScale) {
-  connection,progress = Math.min(
+  if (connection.progress >= 1) return; //the completed line already remains on the pigment canvas
+
+  connection.progress = Math.min(
     1,
     connection.progress + 0.014 * frameScale
   );
   //when progress is 0 = none of the line is visible, 1 = the complete line is visible
-  const gradient = 
+  const currentX =
+    connection.startX +
+    (connection.endX - connection.startX) * connection.progress; //move the visible endpoint from the start toward the destination
+  const currentY =
+    connection.startY +
+    (connection.endY - connection.startY) * connection.progress;
+
+  const gradient =
     pigmentContext.createLinearGradient(
-      (walker.previousX + walker.x) / 2 + random(-1.4, 1.4),
-      (walker.previousY + walker.y) / 2 + random(-1.4, 1.4),
-      walker.x,
-      walker.y
+      connection.startX,
+      connection.startY,
+      connection.endX,
+      connection.endY
     );
+  gradient.addColorStop(0, rgba(palette[connection.startColor], 0.045)); //begin with the landing walker's color
+  gradient.addColorStop(1, rgba(palette[connection.endColor], 0.045)); //end with the neighboring bloom's color
   //this allows gradual bleeding of colors onto each other
+
+  pigmentContext.beginPath();
+  pigmentContext.moveTo(connection.startX, connection.startY);
+  pigmentContext.lineTo(currentX, currentY);
+  pigmentContext.strokeStyle = gradient;
+  pigmentContext.lineWidth = 0.45; //connections are intentionally finer than walker trails
+  pigmentContext.stroke();
 }
 
 //Animaition Loop
@@ -387,6 +488,7 @@ function render(time) {
   const frameScale = 
     elapsed / (1000 / 60);
   //screen render 60 fps; one frame is approx 1000 / 60 = 16.67 millisecond
+  previousTime = time; //store this timestamp so the next frame can calculate its elapsed time
 
   //Update Walkers
   for (const walker of walkers) {
@@ -400,18 +502,32 @@ function render(time) {
   }
   //Update Connections
   for (const connection of connections) {
-    paintConnection(connection, frameScale);
+    if (connection.progress < 1) {
+      paintConnection(connection, frameScale);
+    }
   }
 
   //Combine the canvas layers
+  context.clearRect(0, 0, width, height); //remove the previous visible frame before rebuilding it from permanent layers
+  context.fillStyle = "#fbfaf7"; //restore the warm white paper background
+  context.fillRect(0, 0, width, height);
+
+  context.save(); //save normal canvas settings before applying watercolor filters
   context.globalCompositeOperation = "multiply";
   //multiply blending ameks overlapping colors to darket (like in photoshop)
   context.filter = "blur(6px) saturate(112%)";
   context.drawImage(bleedCanvas, 0, 0, width, height);
   context.filter = "none";
   context.drawImage(pigmentCanvas, 0, 0, width, height);
+  context.restore(); //remove multiply and blur settings before the next frame begins
   //JavaScript requests ANOTHER frame:
   requestAnimationFrame(render);
+}
+
+//Updating the counter
+function updateCounter() {
+  counter.textContent =
+    `${String(nodeCount).padStart(3, "0")} consequences`; //padStart keeps the display formatted like 001, 002, 003
 }
 
 //Clearing the artwork
@@ -424,6 +540,10 @@ function clearArtwork() {
   pigmentContext.clearRect(0, 0, width, height);
   bleedContext.clearRect(0, 0, width, height);
   //origial interface restored
+  prompt.classList.remove("hidden"); //show the opening message again
+  clearButton.classList.remove("visible"); //hide the clear button until the next click
+  counter.classList.remove("visible"); //hide the counter until the next click
+  updateCounter(); //reset the counter text to 000 consequences
 }
 
 canvas.addEventListener("pointerdown", (event) => {
