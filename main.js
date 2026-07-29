@@ -356,3 +356,83 @@ function paintBloom(bloom, frameScale) {
   //the opacity is low but accumulates across many frames
 }
 
+//Drawing Network Connections
+function paintConnection(connection, frameScale) {
+  connection,progress = Math.min(
+    1,
+    connection.progress + 0.014 * frameScale
+  );
+  //when progress is 0 = none of the line is visible, 1 = the complete line is visible
+  const gradient = 
+    pigmentContext.createLinearGradient(...);
+  //this allows gradual bleeding of colors onto each other
+}
+
+//Animaition Loop
+function render(time) {
+  const elapsed = 
+    Math.min(34, time - previousTime);
+  
+  const frameScale = 
+    elapsed / (1000 / 60);
+  //screen render 60 fps; one frame is approx 1000 / 60 = 16.67 millisecond
+
+  //Update Walkers
+  for (const walker of walkers) {
+    if (!walker.landed) {
+      updateWalker(walker, frameScale);
+    }
+  }
+  //Update Blooms
+  for (const bloom of blooms) {
+    paintBloom(bloom, frameScale);
+  }
+  //Update Connections
+  for (const connection of connections) {
+    paintConnection(connection, frameScale);
+  }
+
+  //Combine the canvas layers
+  context.globalCompositeOperation = "multiply";
+  //multiply blending ameks overlapping colors to darket (like in photoshop)
+  context.filter = "blur(6px) saturate(112%)";
+  context.drawImage(bleedCanvas, 0, 0, width, height);
+  context.filter = "none";
+  context.drawImage(pigmentCanvas, 0, 0, width, height);
+  //JavaScript requests ANOTHER frame:
+  requestAnimationFrame(render);
+}
+
+//Clearing the artwork
+function clearArtwork() {
+  walkers.length = 0;
+  blooms.length = 0;
+  connections.length = 0;
+  nodeCount = 0;
+
+  pigmentContext.clearRect(0, 0, width, height);
+  bleedContext.clearRect(0, 0, width, height);
+  //origial interface restored
+}
+
+canvas.addEventListener("pointerdown", (event) => {
+  const bounds = canvas.getBoundingClientRect();
+
+  const x = event.clientX - bounds.left;
+  const y = event.clientY - bounds.top;
+
+  startAt(x, y);
+});
+
+clearButton.addEventListener(
+  "click",
+  clearArtwork
+);
+
+window.addEventListener(
+  "resize",
+  resizeCanvas
+);
+
+resizeCanvas();
+requestAnimationFrame(render);
