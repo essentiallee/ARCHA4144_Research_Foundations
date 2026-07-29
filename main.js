@@ -201,3 +201,135 @@ function startAT(x, y) {
 
   updateCounter();
 }
+
+//Painting a Trail
+//this function gets color and calculates the walker's speed
+function paintTrail(walker) {
+  const color = palette[walker.colorIndex];
+  const speed = Math.hypot(walker.velocityX, walker.velocityY); //defined in createWalker function
+
+  //Soft Stroke
+  bleedContext.beginPath();
+  bleedContext.moveTo(walker.previousX, walker.previousY);
+  bleedContext.quadraticCurveTo(...);
+  bleedContext.strokeStyle = rgba(color, 0.018);
+  bleedContext.lineWidth = walker.lineWidth * 10 + speed * 2;
+  bleedContext.stroke();
+
+  //Sharp Stroke
+  pigmentContext.beginPath();
+  pigmentContext.moveTo(walker.previousX, walker.previousY);
+  pigmentContext.lineTo(walker.x, walker.y);
+  pigmentContext.strokeStyle = rgba(color, random(0.045, 0.11));
+  pigmentContext.lineWidth = walker.lineWidth * random(0.7, 1.5);
+  pigmentContext.stroke();
+
+  //Random fibers
+  if (Math.random() < 0.24) {
+    //Draw another faint, offset line
+  };
+}
+
+//Landing and Branching
+function landWalker(walker) {
+  if (walker.landed) return;
+
+  walker.landed = true; //when a walker lands, it is marked as finished
+  nodeCount.Count += 1; //node counter increases
+
+  createBloom(
+    walker.x,
+    walker.y,
+    walker.colorIndex,
+    random(0.65, 1.2)
+  ); //a bloom is created
+
+  //early generations produce 2 - 3 branches; lather ones produce 1 - 2
+  //rapid initial growth (preivous) to gradually slowing down
+  const branchCount = 
+    walker.generation < 3
+      ? Math.floor(random(2, 4))
+      : Math.floor(random(1, 3));
+
+  //Color Mutation
+  const shouldChangeColor = 
+    Math.random() < 0.52; //each child has a 52% chance of changing color
+
+  const nextColor = shouldChangeColor
+    ? chooseColor(walker.colorIndex)
+    : walker.colorIndex;
+  
+  //Generation Limit
+  if (walker.generation < 7 && walkers.length < 240)
+}
+
+//Connecting nearby Blooms
+function connectToNearbyBloom(walker) {
+  const candidates = blooms.slice(0, -1).slice(-50);
+  //the script examines up to 50 recent blooms
+  let nearest = null;
+  let nearestDistance = 220;
+
+  const distance = Math.hypot(
+    blooms.x - walker.x,
+    blooms.y - walker.y
+  );
+
+  //if it finds a nearbyBloom, it may create a connection
+  //70% chance
+  if (nearest && Math.random() < 0.70) {
+    connections.push({
+      startX: walker.x,
+      startY: walker.y,
+      endX: nearest.x,
+      endY: nearest.y,
+      startColor: walker.colorIndex,
+      endColor: nearest.colorIndex,
+      progress: 0,
+    });
+  }
+}
+
+//Moving the walkers
+//MAIN RANDOM-WALK CALCULATION:
+function updateWalker(walker, frameSclae) {
+  //draw a line between the OLD and NEW positions
+  walker.previousX = walker.x;
+  walker.previousY = walker.y;
+
+  //Find the direction to the target
+  //calculating the differneces between the current position and destination
+  const differenceX = walker.target.x - walker.x;
+  const differenceY = walker.target.y - walker.y;
+  const distance = Math.hypot(differenceX, differenceY || 1;
+  
+  //Apply Attraction
+  //dividing by 'distance' creates a direction with a consistent lenght
+  //'attraction' gently pulls the walker toward its target
+  walker.velocityX +=
+    (differenceX / distance) * attraction * frameSclae;
+  
+  walker.velocityY +=
+    (differenceY / distance) * attraction * frameSclae;
+  )
+
+  const randomTurn = 
+    random(-walker.wobble, walker.wobble) * frameSclae;
+  
+  const rotatedX = 
+    walker.velocityX * cosine -
+    walker.velocityY * sin;
+
+  const rotatedY =
+    walker.velocityX * sin +
+    walker.velocityY * cosine;
+  
+  //apply friction
+  walker.velocityX = rotatedX * 0.985;
+  walker.velocityY = rotatedY * 0.985;
+
+  //limit spped
+  if (speed > maximumSpeed) {
+    //Reduce velocity to maximumSpeed
+  }
+}
