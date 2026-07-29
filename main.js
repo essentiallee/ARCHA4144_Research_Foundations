@@ -45,3 +45,55 @@ let pixelRatio = 1;
 let nodeCount = 0;
 let previousTime = performance.now();
 
+//Random number generator: CORE FUNCTION
+function random(min = 0, max = 1) {
+  return min + Math.random() * (max - min);
+}
+
+//the const palette stores colors, but the canvas needs CSS color text!
+//alpha controls transparency, gets more transparent below '1'
+function rgba(color, alpha) {
+  return 'rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})';
+}
+
+//This chooses a random position in palette
+//retruning color's index, not the color itself
+function chooseColor(differnetFrom = -1) {
+  let index = Math.floor(random(0, palette.length));
+
+  if (index === differnetFrom) {
+    index = 
+      (index + 1 + Math.floor(random(0, palette.length -1)))
+      % palette.length; //makes the index wrap around if it passes the end of the palette
+  }
+
+  return index;
+}
+
+//sizing the canvas: css makes the canvas fill the browser, but JavaScript must also set its internal drawing
+//the line limiting ratio to 2 is grabbed from internet, based on Retina screen
+//A retina screen might have a pixel ratio of 2, meaning a 1000 pixel browser may need a 2000 pixel wide canvas to reamin clean.
+function resizeCanvas() {
+  width = window.innerWidth;
+  height = window.innerHeight;
+
+  pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+  for (const surface of [canvas, pigmentCanvas, bleedCanvas]) {
+    surface.width = Math.floor(width * pixelRatio);
+    surface.height = Math.floor(height * pixelRatio);
+
+    const surfaceConext = surface.getContext("2d");
+
+    surfaceConext.setTransform(
+      pixelRatio,
+      0,
+      0,
+      pixelRatio,
+      0,
+      0
+    );
+  }
+
+  claerArtwork();
+}
