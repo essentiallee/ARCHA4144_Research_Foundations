@@ -13,7 +13,7 @@ canvas.getContext("2d");
 //Create two canvanses to achieve bleeding effect and color effect
 //way to generate watercolor dropping on water puddle
 
-const pigmentCanvas = document.createElement("cnanvas");
+const pigmentCanvas = document.createElement("canvas");
 const pigmentContext = pigmentCanvas.getContext("2d");
 
 const bleedCanvas = document.createElement("canvas");
@@ -33,7 +33,7 @@ const palette = [
 //walkers = moving points that leave trails
 //blooms = watercolor strains that gorw around landing points
 //connections = lines drawn between nearby nodes
-const walker = [];
+const walkers = [];
 const blooms = [];
 const connections = [];
 
@@ -53,7 +53,7 @@ function random(min = 0, max = 1) {
 //the const palette stores colors, but the canvas needs CSS color text!
 //alpha controls transparency, gets more transparent below '1'
 function rgba(color, alpha) {
-  return 'rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})';
+  return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
 }
 
 //This chooses a random position in palette
@@ -95,7 +95,7 @@ function resizeCanvas() {
     );
   }
 
-  claerArtwork();
+  clearArtwork();
 }
 
 //This function chooses the path and the distance of the random destination
@@ -150,7 +150,7 @@ function createWalker(
 
     maxAge: //walker cannot go forever; must have destination (max Age)
       random(150, 410) *
-      Max.max(0.55, 1 - generation * 0.06),
+      Math.max(0.55, 1 - generation * 0.06),
 
     //each walker receives a slightly different width and movement instability (detail to the design!)
     lineWidth: random(0.45, 1.35),
@@ -175,7 +175,7 @@ function createBloom(x, y, colorIndex, strength = 1) {
 }
 
 //responding to FIRST CLICK!
-function startAT(x, y) {
+function startAt(x, y) {
   prompt.classList.add("hidden");
   clearButton.classList.add("visible");
   counter.classList.add("visible");
@@ -211,7 +211,12 @@ function paintTrail(walker) {
   //Soft Stroke
   bleedContext.beginPath();
   bleedContext.moveTo(walker.previousX, walker.previousY);
-  bleedContext.quadraticCurveTo(...);
+  bleedContext.quadraticCurveTo(
+    (walker.previousX + walker.x) / 2 + random(-1.4, 1.4),
+    (walker.previousY + walker.y) / 2 + random(-1.4, -1.4),
+    walker.x,
+    walker.y
+  );
   bleedContext.strokeStyle = rgba(color, 0.018);
   bleedContext.lineWidth = walker.lineWidth * 10 + speed * 2;
   bleedContext.stroke();
@@ -235,7 +240,7 @@ function landWalker(walker) {
   if (walker.landed) return;
 
   walker.landed = true; //when a walker lands, it is marked as finished
-  nodeCount.Count += 1; //node counter increases
+  nodeCount += 1; //node counter increases
 
   createBloom(
     walker.x,
@@ -260,7 +265,9 @@ function landWalker(walker) {
     : walker.colorIndex;
   
   //Generation Limit
-  if (walker.generation < 7 && walkers.length < 240)
+  if (walker.generation < 7 && walkers.length < 240) {
+    // Create the next generation here
+  }
 }
 
 //Connecting nearby Blooms
@@ -292,7 +299,7 @@ function connectToNearbyBloom(walker) {
 
 //Moving the walkers
 //MAIN RANDOM-WALK CALCULATION:
-function updateWalker(walker, frameSclae) {
+function updateWalker(walker, frameScale) {
   //draw a line between the OLD and NEW positions
   walker.previousX = walker.x;
   walker.previousY = walker.y;
@@ -301,20 +308,19 @@ function updateWalker(walker, frameSclae) {
   //calculating the differneces between the current position and destination
   const differenceX = walker.target.x - walker.x;
   const differenceY = walker.target.y - walker.y;
-  const distance = Math.hypot(differenceX, differenceY || 1;
+  const distance = Math.hypot(differenceX, differenceY) || 1;
   
   //Apply Attraction
   //dividing by 'distance' creates a direction with a consistent lenght
   //'attraction' gently pulls the walker toward its target
   walker.velocityX +=
-    (differenceX / distance) * attraction * frameSclae;
+    (differenceX / distance) * attraction * frameScale;
   
   walker.velocityY +=
-    (differenceY / distance) * attraction * frameSclae;
-  )
+    (differenceY / distance) * attraction * frameScale;
 
   const randomTurn = 
-    random(-walker.wobble, walker.wobble) * frameSclae;
+    random(-walker.wobble, walker.wobble) * frameScale;
   
   const rotatedX = 
     walker.velocityX * cosine -
@@ -334,8 +340,8 @@ function updateWalker(walker, frameSclae) {
   }
 
   //Move
-  walker.x += walker.velocityX * frameSclae;
-  walker.y += walker.velocityY * frameSclae;
+  walker.x += walker.velocityX * frameScale;
+  walker.y += walker.velocityY * frameScale;
 
   paintTrail(walker);
 
@@ -364,7 +370,12 @@ function paintConnection(connection, frameScale) {
   );
   //when progress is 0 = none of the line is visible, 1 = the complete line is visible
   const gradient = 
-    pigmentContext.createLinearGradient(...);
+    pigmentContext.createLinearGradient(
+      (walker.previousX + walker.x) / 2 + random(-1.4, 1.4),
+      (walker.previousY + walker.y) / 2 + random(-1.4, 1.4),
+      walker.x,
+      walker.y
+    );
   //this allows gradual bleeding of colors onto each other
 }
 
