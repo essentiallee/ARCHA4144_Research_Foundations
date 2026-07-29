@@ -1,5 +1,7 @@
 This website is the 'object' portion of the MS.CDP's Colloquium i Final Project.
 
+https://essentiallee.github.io/ARCHA4144_Research_Foundations/ 
+
 The core researrch direction of the project is based on art-based gentrification, highlighting the case of SoHo from 1950s to the 70s. The project observes gentrification from both tangible data (rent, real estate census data, gallery counts) and narrative based records (interviews, curations, exhibitions) to visualize the migration of culture labor. 
 
 The object is an interactive representation of the vast interconnectivity of gentrification. Based on the 'random walker' algorithm, the interactive website embodies how a single action can yield unintended network of consequences. 
