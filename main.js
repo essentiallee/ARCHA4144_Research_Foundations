@@ -332,4 +332,27 @@ function updateWalker(walker, frameSclae) {
   if (speed > maximumSpeed) {
     //Reduce velocity to maximumSpeed
   }
+
+  //Move
+  walker.x += walker.velocityX * frameSclae;
+  walker.y += walker.velocityY * frameSclae;
+
+  paintTrail(walker);
+
+  if (distance < 8 || walker.age >= walker.maxAge) {
+    landWalker(walker);
+  }
 }
+
+//Growing Blooms
+function paintBloom(bloom, frameScale) {
+  const progress = 
+    Math.min(1, bloom.age / bloom.maxAge);
+  
+  const easedProgres = 
+    1 - Math.pow(1 - progress, 3);
+  //This makes the bloom expand quickly at first, then slow down near the end
+  //several circles are placed around its center with random. size and offsets
+  //the opacity is low but accumulates across many frames
+}
+
