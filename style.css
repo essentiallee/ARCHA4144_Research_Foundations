@@ -15,10 +15,10 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #fbfaf7;
+  background: #ffffff;
 }
 
-/* Subtle paper-grain overlay. This part allows for circles and transparency */
+/* This part allows for circles and transparency */
 
 body::after {
   content: "";
