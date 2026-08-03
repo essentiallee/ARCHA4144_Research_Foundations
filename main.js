@@ -7,7 +7,8 @@ const prompt = document.querySelector("#prompt");
 const clearButton = document.querySelector("#clearButton");
 const counter = document.querySelector("#counter");
 
-//Calling 2d functions in Java
+//Calling 2d functions in JavaScript
+//A native HTML5 API used to draw flat 2D shapes
 canvas.getContext("2d");
 
 //Create two canvanses to achieve bleeding effect and color effect
